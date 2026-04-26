@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -40,8 +41,8 @@ model Event {
   description String?
   date        DateTime
   venue       String
-  isSeated    Boolean  @default(false)
   capacity    Int
+  price       Float    @default(0)
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
 
@@ -54,12 +55,9 @@ model Event {
 }
 
 model Seat {
-  id       String  @id @default(cuid())
-  row      String
-  number   Int
-  tier     String  @default("GENERAL")
-  price    Float
-  reserved Boolean @default(false)
+  id          String  @id @default(cuid())
+  label       String  // e.g. "GA-1", "GA-2"
+  isAvailable Boolean @default(true)
 
   event   Event  @relation(fields: [eventId], references: [id])
   eventId String
@@ -96,7 +94,6 @@ model Ticket {
   seatId  String? @unique
 }
 
-// NextAuth required models
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -112,6 +109,7 @@ model Account {
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -127,5 +125,6 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+
   @@unique([identifier, token])
 }

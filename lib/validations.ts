@@ -1,3 +1,4 @@
+// lib/validations.ts
 // Zod schemas for API request validation
 import { z } from "zod"
 
@@ -16,16 +17,16 @@ export const loginSchema = z.object({
 export const createEventSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  date: z.string().datetime(),
+  date: z.string().min(1),           // relaxed — accepts datetime-local format
   venue: z.string().min(1),
-  isSeated: z.boolean().default(false),
   capacity: z.number().int().positive(),
+  price: z.number().nonnegative(),   // added — price in dollars (e.g. 25.00)
 })
 
 export const purchaseSchema = z.object({
   eventId: z.string(),
-  seatIds: z.array(z.string()).optional(), // for seated events
-  quantity: z.number().int().positive().optional(), // for GA events
+  seatIds: z.array(z.string()).optional(),
+  quantity: z.number().int().positive().optional(),
 })
 
 export const validateTicketSchema = z.object({

@@ -1,3 +1,4 @@
+// lib/utils.ts
 // Shared utility functions
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -15,10 +16,11 @@ export function formatDate(date: string | Date): string {
   }).format(new Date(date))
 }
 
-// Format currency
-export function formatPrice(cents: number): string {
+// Format currency — price is stored as dollars (e.g. 25.00), not cents
+export function formatPrice(price: number): string {
+  if (price === 0) return "Free"
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(cents / 100)
+  }).format(price)
 }
