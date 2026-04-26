@@ -1,6 +1,11 @@
-// QR code generation utility — filled in during Ticketing module
-export async function generateQRCode(_ticketId: string): Promise<string> {
-  // TODO: Module 3 — Ticketing will implement this
-  // Returns a base64 data URL of the QR code image
-  return ""
+// lib/qr.ts
+import QRCode from "qrcode"
+
+// Generates a base64 PNG data URL from any string
+export async function generateQR(text: string): Promise<string> {
+  return QRCode.toDataURL(text, {
+    errorCorrectionLevel: "H",
+    margin: 2,
+    width: 300,
+  })
 }
