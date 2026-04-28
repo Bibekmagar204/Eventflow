@@ -119,11 +119,9 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Delete seats first, then event (foreign key order)
-    await prisma.$transaction([
-      prisma.seat.deleteMany({ where: { eventId: id } }),
-      prisma.event.delete({ where: { id } }),
-    ]);
+    // Seats / orders / tickets cascade via FK ON DELETE CASCADE
+    // (see prisma/migrations/20260428163800_cascade_event_dependents).
+    await prisma.event.delete({ where: { id } });
 
     return NextResponse.json({ data: { success: true } });
   } catch (err) {
