@@ -398,6 +398,7 @@ export default function OrganiserDashboardClient({
         const uploadJson = await uploadRes.json()
         if (!uploadRes.ok) {
           setUploadError(uploadJson.error ?? "Image upload failed.")
+          setToast({ message: "Failed please contact support", tone: "error" })
           return
         }
         imageUrl = uploadJson.data?.imageUrl
@@ -426,13 +427,16 @@ export default function OrganiserDashboardClient({
                 .flat()
                 .join(", ")
         setCreateError(firstError)
+        setToast({ message: "Failed please contact support", tone: "error" })
         return
       }
 
       await fetchStats()
       closeCreateModal()
+      setToast({ message: "Event created successfully", tone: "success" })
     } catch {
       setCreateError("Something went wrong. Please try again.")
+      setToast({ message: "Failed please contact support", tone: "error" })
     } finally {
       setUploadingImage(false)
       setCreatingEvent(false)
