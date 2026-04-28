@@ -10,13 +10,12 @@ import OrganiserDashboardClient, {
 
 async function getInitialStats(): Promise<Stats> {
   const session = await getServerSession(authOptions)
-  const user = session?.user as any
-  if (!session || user?.role !== "ORGANISER") {
+  if (!session || session.user.role !== "ORGANISER") {
     throw new Error("Unauthorised")
   }
 
   const events = await prisma.event.findMany({
-    where: { organiserId: user.id },
+    where: { organiserId: session.user.id },
     include: {
       orders: {
         where: { status: "PAID" },
@@ -140,15 +139,14 @@ async function getPrefetchedOrdersByEvent(organiserId: string): Promise<Record<s
 
 export default async function OrganiserDashboardPage() {
   const session = await getServerSession(authOptions)
-  const user = session?.user as any
-  if (!session || user?.role !== "ORGANISER") {
+  if (!session || session.user.role !== "ORGANISER") {
     redirect("/login")
   }
 
   try {
     const initialStats = await getInitialStats()
-    const prefetchedEventDetails = await getPrefetchedEventDetails(user.id)
-    const prefetchedOrdersByEvent = await getPrefetchedOrdersByEvent(user.id)
+    const prefetchedEventDetails = await getPrefetchedEventDetails(session.user.id)
+    const prefetchedOrdersByEvent = await getPrefetchedOrdersByEvent(session.user.id)
     return (
       <OrganiserDashboardClient
         initialStats={initialStats}

@@ -16,8 +16,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
     const session = await getServerSession(authOptions)
 
-    const user = session?.user as any
-    if (!session || user?.role !== "ORGANISER") {
+    if (!session || session.user.role !== "ORGANISER") {
       return NextResponse.json({ error: "Unauthorised" }, { status: 401 })
     }
 
@@ -30,7 +29,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 })
     }
 
-    if (event.organiserId !== user?.id) {
+    if (event.organiserId !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
@@ -65,8 +64,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     const session = await getServerSession(authOptions)
 
-    const user = session?.user as any
-    if (!session || user?.role !== "ORGANISER") {
+    if (!session || session.user.role !== "ORGANISER") {
       return NextResponse.json({ error: "Unauthorised" }, { status: 401 })
     }
 
@@ -79,7 +77,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 })
     }
 
-    if (event.organiserId !== user?.id) {
+    if (event.organiserId !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 

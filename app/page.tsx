@@ -96,13 +96,13 @@ export default async function Home() {
                 <HomeEventsMarquee
                   events={events}
                   prefetchedEventDetails={prefetchedEventDetails}
-                  viewerRole={(session?.user as any)?.role}
+                  viewerRole={session?.user?.role}
                 />
               ) : (
                 <HomeEventsMarquee
                   events={events}
                   prefetchedEventDetails={prefetchedEventDetails}
-                  viewerRole={(session?.user as any)?.role}
+                  viewerRole={session?.user?.role}
                 />
               )}
             </div>

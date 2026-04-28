@@ -20,13 +20,14 @@ function extensionFromType(mimeType: string) {
   return "jpg"
 }
 
-function isUploadedFile(value: FormDataEntryValue | null): value is UploadedFileLike {
+function isUploadedFile(value: unknown): value is UploadedFileLike {
   if (!value || typeof value === "string") return false
+  const candidate = value as Partial<UploadedFileLike>
   return (
-    typeof value.name === "string" &&
-    typeof value.type === "string" &&
-    typeof value.size === "number" &&
-    typeof value.arrayBuffer === "function"
+    typeof candidate.name === "string" &&
+    typeof candidate.type === "string" &&
+    typeof candidate.size === "number" &&
+    typeof candidate.arrayBuffer === "function"
   )
 }
 
