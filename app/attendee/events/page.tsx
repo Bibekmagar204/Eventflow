@@ -4,6 +4,8 @@ import AttendeeEventsClient, {
   AttendeeEventDetail,
 } from "@/components/attendee/AttendeeEventsClient";
 
+export const dynamic = "force-dynamic";
+
 async function getUpcomingEvents(): Promise<{
   events: AttendeeEvent[];
   prefetchedEventDetails: Record<string, AttendeeEventDetail>;

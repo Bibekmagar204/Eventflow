@@ -5,6 +5,8 @@ import Navbar from "@/components/layout/Navbar"
 import { prisma } from "@/lib/prisma"
 import { formatDate, formatPrice } from "@/lib/utils"
 
+export const dynamic = "force-dynamic"
+
 interface EventDetail {
   id: string
   title: string
