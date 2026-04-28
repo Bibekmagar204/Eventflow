@@ -17,7 +17,7 @@ export interface EventSummary {
   date: string
   venue: string
   isSeated: boolean
-  capacity: int
+  capacity: number
   published: boolean
   organiserId: string
 }

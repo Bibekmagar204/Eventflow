@@ -8,8 +8,34 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        "liquid-left": {
+          "0%": {
+            transform: "translate3d(-10%, 4.8em, 0) rotate(330deg)",
+            opacity: "1",
+          },
+          "100%": {
+            transform: "translate3d(-10%, -1em, 0) rotate(100deg)",
+            opacity: "1",
+          },
+        },
+        "liquid-right": {
+          "0%": {
+            transform: "translate3d(10%, 4.8em, 0) rotate(0deg)",
+            opacity: "1",
+          },
+          "100%": {
+            transform: "translate3d(10%, -1em, 0) rotate(180deg)",
+            opacity: "1",
+          },
+        },
+      },
+      animation: {
+        "liquid-left": "liquid-left 1.5s ease forwards",
+        "liquid-right": "liquid-right 1.5s ease forwards",
+      },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-rubik)", "system-ui", "sans-serif"],
       },
       colors: {
         brand: {

@@ -14,6 +14,10 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const mine = searchParams.get("mine") === "true";
+    const publishedOnly = searchParams.get("published") === "true";
+    const upcomingOnly = searchParams.get("upcoming") === "true";
+    const limitParam = Number(searchParams.get("limit") ?? "");
+    const take = Number.isFinite(limitParam) && limitParam > 0 ? Math.min(limitParam, 24) : undefined;
 
     // If organiser requests their own events
     if (mine) {
@@ -24,7 +28,7 @@ export async function GET(req: NextRequest) {
       const events = await prisma.event.findMany({
         where: { organiserId: session.user.id },
         include: {
-          _count: { select: { seats: true } },
+          _count: { select: { seats: true, tickets: true } },
         },
         orderBy: { date: "asc" },
       });
@@ -33,12 +37,19 @@ export async function GET(req: NextRequest) {
     }
 
     // Public: return all events
+    const where = {
+      ...(publishedOnly && { published: true }),
+      ...(upcomingOnly && { date: { gte: new Date() } }),
+    };
+
     const events = await prisma.event.findMany({
+      where,
       include: {
         organiser: { select: { name: true } },
-        _count: { select: { seats: true } },
+        _count: { select: { seats: true, tickets: true } },
       },
       orderBy: { date: "asc" },
+      ...(take && { take }),
     });
 
     return NextResponse.json({ data: events });
@@ -69,7 +80,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { title, description, date, venue, capacity, price } = parsed.data;
+    const { title, description, date, venue, capacity, price, imageUrl } = parsed.data;
 
     // Create event + seats in a single transaction
     const event = await prisma.$transaction(async (tx) => {
@@ -81,6 +92,7 @@ export async function POST(req: NextRequest) {
           venue,
           capacity,
           price,
+          imageUrl,
           organiserId: session.user.id,
         },
       });

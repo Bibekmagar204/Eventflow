@@ -5,13 +5,15 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
 interface RouteParams {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 // GET /api/organiser/events/:id/orders
 // ORGANISER only — returns all orders for a specific event
 export async function GET(req: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params
+
     const session = await getServerSession(authOptions)
 
     if (!session || session.user.role !== "ORGANISER") {
@@ -20,7 +22,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
     // Verify organiser owns this event
     const event = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!event) {
@@ -32,7 +34,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     }
 
     const orders = await prisma.order.findMany({
-      where: { eventId: params.id },
+      where: { eventId: id },
       include: {
         user: {
           select: { id: true, name: true, email: true },
@@ -58,6 +60,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 // Body: { orderId: string }
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params
+
     const session = await getServerSession(authOptions)
 
     if (!session || session.user.role !== "ORGANISER") {
@@ -66,7 +70,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     // Verify organiser owns this event
     const event = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!event) {
@@ -98,7 +102,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 })
     }
 
-    if (order.eventId !== params.id) {
+    if (order.eventId !== id) {
       return NextResponse.json({ error: "Order does not belong to this event" }, { status: 400 })
     }
 

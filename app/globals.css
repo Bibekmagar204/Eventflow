@@ -1,3 +1,148 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --text-hero: #f6e9cf;
+    --text-light: #f3f0e8;
+    --text-muted-light: rgba(243, 240, 232, 0.72);
+  }
+
+  body {
+    font-family: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  @keyframes liquid-left {
+    0% {
+      transform: translate3d(-10%, 4.8em, 0) rotate(330deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(-10%, -1em, 0) rotate(100deg);
+      opacity: 1;
+    }
+  }
+
+  @keyframes liquid-right {
+    0% {
+      transform: translate3d(10%, 4.8em, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(10%, -1em, 0) rotate(180deg);
+      opacity: 1;
+    }
+  }
+
+  .btn-liquid {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+    transition:
+      background-color 0.5s cubic-bezier(0.2, 0, 0.1, 1),
+      color 0.5s cubic-bezier(0.2, 0, 0.1, 1),
+      box-shadow 0.5s ease;
+  }
+
+  .btn-liquid::before,
+  .btn-liquid::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    left: -50%;
+    right: -50%;
+    top: 0;
+    z-index: 0;
+    height: 0;
+    padding-bottom: 200%;
+    border-radius: 39%;
+    opacity: 0;
+  }
+
+  .btn-liquid::before {
+    transform: translate3d(-10%, 4.8em, 0) rotate(330deg);
+    background: linear-gradient(25deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0));
+  }
+
+  .btn-liquid::after {
+    transform: translate3d(10%, 4.8em, 0) rotate(0deg);
+    background: linear-gradient(70deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
+  }
+
+  .btn-liquid:hover::before {
+    animation: liquid-left 1.5s ease forwards;
+  }
+
+  .btn-liquid:hover::after {
+    animation: liquid-right 1.5s ease forwards;
+  }
+
+  .btn-liquid .btn-liquid-label {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer utilities {
+  @keyframes toastDropIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -14px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes marqueeScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-fade-up {
+    opacity: 0;
+    animation: fadeUp 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  .animate-toast-drop {
+    animation: toastDropIn 220ms ease-out forwards;
+  }
+
+  .hero-marquee-track {
+    animation: marqueeScroll 32s linear infinite;
+    will-change: transform;
+  }
+
+  .hero-marquee-track:hover {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .hero-marquee-track {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

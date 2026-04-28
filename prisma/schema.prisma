@@ -39,6 +39,7 @@ model Event {
   id          String   @id @default(cuid())
   title       String
   description String?
+  imageUrl    String?
   date        DateTime
   venue       String
   capacity    Int
@@ -59,7 +60,7 @@ model Seat {
   label       String  // e.g. "GA-1", "GA-2"
   isAvailable Boolean @default(true)
 
-  event   Event  @relation(fields: [eventId], references: [id])
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId String
 
   ticket Ticket?
@@ -73,7 +74,7 @@ model Order {
 
   user    User   @relation(fields: [userId], references: [id])
   userId  String
-  event   Event  @relation(fields: [eventId], references: [id])
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId String
 
   tickets Ticket[]
@@ -86,11 +87,11 @@ model Ticket {
   usedAt    DateTime?
   createdAt DateTime  @default(now())
 
-  order   Order  @relation(fields: [orderId], references: [id])
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId String
-  event   Event  @relation(fields: [eventId], references: [id])
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId String
-  seat    Seat?  @relation(fields: [seatId], references: [id])
+  seat    Seat?  @relation(fields: [seatId], references: [id], onDelete: SetNull)
   seatId  String? @unique
 }
 
