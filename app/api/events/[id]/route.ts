@@ -5,15 +5,17 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // GET /api/events/:id
 // Returns a single event with seat availability count
 export async function GET(req: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params;
+
     const event = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         organiser: { select: { id: true, name: true, email: true } },
         _count: {
@@ -31,7 +33,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
     // Count available seats separately
     const availableSeats = await prisma.seat.count({
-      where: { eventId: params.id, isAvailable: true },
+      where: { eventId: id, isAvailable: true },
     });
 
     return NextResponse.json({
@@ -47,6 +49,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 // Organiser only — update event details or toggle published
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params;
+
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "ORGANISER") {
@@ -55,7 +59,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     // Make sure this organiser owns the event
     const existing = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
@@ -69,10 +73,10 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     const body = await req.json();
 
     // Only allow these fields to be updated
-    const { title, description, date, venue, price, published } = body;
+    const { title, description, date, venue, price, published, imageUrl } = body;
 
     const updated = await prisma.event.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(title !== undefined && { title }),
         ...(description !== undefined && { description }),
@@ -80,6 +84,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
         ...(venue !== undefined && { venue }),
         ...(price !== undefined && { price }),
         ...(published !== undefined && { published }),
+        ...(imageUrl !== undefined && { imageUrl }),
       },
     });
 
@@ -94,6 +99,8 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 // Organiser only — deletes event and cascades to seats
 export async function DELETE(req: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params;
+
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "ORGANISER") {
@@ -101,7 +108,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
     }
 
     const existing = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
@@ -114,8 +121,8 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
 
     // Delete seats first, then event (foreign key order)
     await prisma.$transaction([
-      prisma.seat.deleteMany({ where: { eventId: params.id } }),
-      prisma.event.delete({ where: { id: params.id } }),
+      prisma.seat.deleteMany({ where: { eventId: id } }),
+      prisma.event.delete({ where: { id } }),
     ]);
 
     return NextResponse.json({ data: { success: true } });

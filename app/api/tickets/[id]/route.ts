@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
 interface RouteParams {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 // GET /api/tickets/:id
@@ -13,6 +13,7 @@ interface RouteParams {
 // Only the ticket owner or a STAFF member can access it
 export async function GET(req: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session) {
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     }
 
     const ticket = await prisma.ticket.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         event: {
           select: {

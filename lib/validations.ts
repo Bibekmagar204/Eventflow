@@ -21,6 +21,7 @@ export const createEventSchema = z.object({
   venue: z.string().min(1),
   capacity: z.number().int().positive(),
   price: z.number().nonnegative(),   // added — price in dollars (e.g. 25.00)
+  imageUrl: z.string().url().optional(),
 })
 
 export const purchaseSchema = z.object({

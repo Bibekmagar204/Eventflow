@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -39,39 +40,80 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-1 text-2xl font-bold">Create account</h1>
-        <p className="mb-6 text-sm text-gray-500">Join EventFlow today</p>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-stone-100 px-4 py-10">
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/login-hero-v2.png"
+          alt="Concert crowd background"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[rgba(20,18,28,0.45)]" />
+      </div>
+
+      <Link
+        href="/"
+        className="btn-liquid absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-lg border border-[rgba(246,233,207,0.55)] bg-[var(--text-hero)] px-4 py-2.5 text-sm font-semibold text-stone-900 transition-colors hover:border-stone-600 hover:bg-stone-700 hover:text-[var(--text-light)] sm:left-6 sm:top-6"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="transition-transform duration-200"
+          aria-hidden="true"
+        >
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </svg>
+        <span className="btn-liquid-label">Back to home</span>
+      </Link>
+
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-white/20 bg-[rgba(20,18,28,0.62)] p-8 shadow-xl backdrop-blur-md sm:p-9">
+        <div className="mb-7 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-[var(--text-muted-light)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+            Join EventFlow
+          </span>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-[var(--text-hero)]">Create your account</h1>
+          <p className="mt-2 text-sm text-[color:var(--text-muted-light)]">Set up your profile and start exploring live events.</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Name</label>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text-light)]">Name</label>
             <input
               name="name"
               value={form.name}
               onChange={handleChange}
               required
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-white/20 bg-white/90 px-3 py-2.5 text-sm text-stone-900 outline-none transition focus:border-[var(--text-hero)] focus:ring-2 focus:ring-[rgba(246,233,207,0.35)]"
               placeholder="Your name"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text-light)]">Email</label>
             <input
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-white/20 bg-white/90 px-3 py-2.5 text-sm text-stone-900 outline-none transition focus:border-[var(--text-hero)] focus:ring-2 focus:ring-[rgba(246,233,207,0.35)]"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Password</label>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text-light)]">Password</label>
             <input
               name="password"
               type="password"
@@ -79,18 +121,18 @@ export default function RegisterPage() {
               onChange={handleChange}
               required
               minLength={8}
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-white/20 bg-white/90 px-3 py-2.5 text-sm text-stone-900 outline-none transition focus:border-[var(--text-hero)] focus:ring-2 focus:ring-[rgba(246,233,207,0.35)]"
               placeholder="Min 8 characters"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">I am a...</label>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text-light)]">I am A...</label>
             <select
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-white/20 bg-white/90 px-3 py-2.5 text-sm text-stone-900 outline-none transition focus:border-[var(--text-hero)] focus:ring-2 focus:ring-[rgba(246,233,207,0.35)]"
             >
               <option value="ATTENDEE">Attendee — I want to buy tickets</option>
               <option value="ORGANISER">Organiser — I want to create events</option>
@@ -99,21 +141,23 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+            <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+              {error}
+            </p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-indigo-600 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="btn-liquid mt-1 w-full rounded-xl border border-[rgba(246,233,207,0.55)] bg-[var(--text-hero)] py-2.5 text-sm font-semibold text-stone-900 transition-colors hover:border-stone-600 hover:bg-stone-700 hover:text-[var(--text-light)] disabled:opacity-50"
           >
-            {loading ? "Creating account..." : "Create account"}
+            <span className="btn-liquid-label">{loading ? "Creating account..." : "Create account"}</span>
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-500">
+        <p className="mt-5 text-center text-sm text-[color:var(--text-muted-light)]">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-indigo-600 hover:underline">
+          <Link href="/login" className="font-semibold text-[var(--text-light)] hover:underline">
             Sign in
           </Link>
         </p>
