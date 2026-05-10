@@ -5,10 +5,13 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createPortal } from "react-dom"
+import { Elements } from "@stripe/react-stripe-js"
 import EventCard, { EventCardData } from "@/components/events/EventCard"
 import { generateQR } from "@/lib/qr"
 import { formatDate, formatPrice } from "@/lib/utils"
 import TicketDetailModal from "@/components/attendee/TicketDetailModal"
+import StripePurchaseForm from "@/components/checkout/StripePurchaseForm"
+import { stripePromise } from "@/lib/stripeClient"
 import type { TicketDetail } from "@/components/attendee/MyTicketsClient"
 
 export interface HomeEventDetail {
@@ -119,25 +122,19 @@ export default function HomeEventsMarquee({
     setPurchasedTicketId(null)
   }
 
-  async function handlePurchaseConfirm() {
-    if (!selectedEvent) return
-    setPurchaseState("loading")
+  function handlePurchaseSuccess(ticketId: string) {
+    setPurchasedTicketId(ticketId)
+    setPurchaseState("success")
     setPurchaseError(null)
+  }
 
-    try {
-      const res = await fetch("/api/tickets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ eventId: selectedEvent.id }),
-      })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error ?? "Purchase failed")
-      setPurchasedTicketId(json.data.id)
-      setPurchaseState("success")
-    } catch (error: any) {
-      setPurchaseError(error.message ?? "Purchase failed")
-      setPurchaseState("error")
+  function handlePurchaseError(message: string) {
+    if (!message) {
+      setPurchaseError(null)
+      return
     }
+    setPurchaseError(message)
+    setPurchaseState("error")
   }
 
   async function openPurchasedTicketModal(ticketId: string) {
@@ -374,9 +371,15 @@ export default function HomeEventsMarquee({
                       <span className="text-2xl font-bold text-[var(--text-hero)]">{formatPrice(selectedEvent.price)}</span>
                     </div>
 
-                    <div className="rounded-lg border border-blue-300/30 bg-blue-500/10 px-4 py-3 text-xs text-blue-200">
-                      Payment is simulated — no real charge will be made.
-                    </div>
+                    {stripePromise ? (
+                      <div className="rounded-lg border border-blue-300/30 bg-blue-500/10 px-4 py-3 text-xs text-blue-200">
+                        Secure checkout powered by Stripe.
+                      </div>
+                    ) : (
+                      <div className="rounded-lg border border-red-300/40 bg-red-500/15 px-4 py-3 text-xs text-red-200">
+                        Stripe checkout is not configured. Add NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY to enable purchases.
+                      </div>
+                    )}
 
                     {purchaseState === "error" && purchaseError && (
                       <div className="rounded-lg border border-red-300/40 bg-red-500/15 px-3 py-2 text-xs text-red-200">
@@ -403,21 +406,16 @@ export default function HomeEventsMarquee({
                             </button>
                           </div>
                         </div>
-                      ) : (
-                        <button
-                          onClick={handlePurchaseConfirm}
-                          disabled={purchaseState === "loading"}
-                          className="btn-liquid w-full rounded-xl border border-[rgba(246,233,207,0.55)] bg-[var(--text-hero)] py-2.5 text-sm font-semibold text-stone-900 transition-colors hover:border-stone-600 hover:bg-stone-700 hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          <span className="btn-liquid-label">
-                            {purchaseState === "loading"
-                              ? "Processing..."
-                              : selectedEvent.price === 0
-                                ? "Claim Free Ticket"
-                                : `Confirm Purchase — ${formatPrice(selectedEvent.price)}`}
-                          </span>
-                        </button>
-                      )}
+                      ) : stripePromise ? (
+                        <Elements stripe={stripePromise}>
+                          <StripePurchaseForm
+                            eventId={selectedEvent.id}
+                            amount={selectedEvent.price}
+                            onSuccess={handlePurchaseSuccess}
+                            onError={handlePurchaseError}
+                          />
+                        </Elements>
+                      ) : null}
                     </div>
                   </div>
                 </div>

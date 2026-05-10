@@ -121,7 +121,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       // Update order status
       await tx.order.update({
         where: { id: orderId },
-        data: { status: "REFUNDED" },
+        data: { status: "REFUNDED", paymentStatus: "REFUNDED" },
       })
 
       // Restore seats to available
