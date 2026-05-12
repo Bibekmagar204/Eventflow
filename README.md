@@ -128,15 +128,7 @@ Order
 Ticket
 ├── id, qrCode, checkedIn
 └── relations: Order, Event, Seat
----
 
-## 📐 System Design
-
-### UML Class Diagram
-![UML Class Diagram](public/screenshots/eventflow_class_diagram.png)
-
-### State Chart Diagram
-![State Chart](public/screenshots/eventflow_statechart.png)
 
 ---
 
