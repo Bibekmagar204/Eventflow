@@ -59,13 +59,13 @@ three types of users in one seamless platform:
 ### Login & Register
 | Login | Register |
 |-------|----------|
-| ![Login](public/screenshots/Login_page_empty_.png) | ![Register](public/screenshots/Register_page.png) |
+| ![Login](public/screenshots/Login%20page(empty).png) | ![Register](public/screenshots/Register%20page.png) |
 
 ### Attendee Dashboard
-![Attendee Dashboard](public/screenshots/Dashboard__attendee_.png)
+![Attendee Dashboard](public/screenshots/Dashboard%20(attendee).png)
 
 ### Event Detail Modal
-![Event Modal](public/screenshots/Screenshot_2026-05-10_182951.png)
+![Event Modal](public/screenshots/Screenshot%202026-05-10%20182951.png)
 
 ### Stripe Checkout
 ![Checkout](public/screenshots/Checkout.png)
@@ -73,13 +73,23 @@ three types of users in one seamless platform:
 ### Ticket & QR Code
 | Ticket View | QR Code |
 |-------------|---------|
-| ![Ticket](public/screenshots/Ticket_.png) | ![QR Code](public/screenshots/Ticket_qr_code.png) |
+| ![Ticket](public/screenshots/Ticket%20.png) | ![QR Code](public/screenshots/Ticket%20qr%20code.png) |
 
 ### Organiser Dashboard
-![Organiser Dashboard](public/screenshots/Dashboard__organiser_.png)
+![Organiser Dashboard](public/screenshots/Dashboard%20(organiser).png)
 
 ### Staff QR Scanner
-![Staff Scanner](public/screenshots/Staff__ticket_scan_.png)
+![Staff Scanner](public/screenshots/Staff%20(ticket%20scan).png)
+
+---
+
+## 📐 System Design
+
+### UML Class Diagram
+![UML Class Diagram](public/screenshots/eventflow_class_diagram.png)
+
+### State Chart Diagram
+![State Chart](public/screenshots/eventflow_statechart.png)
 
 ---
 
