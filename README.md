@@ -193,6 +193,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Playwright (E2E tests)
+
+Run the Playwright test suite:
+
+```bash
+npm run test:e2e
+```
+
+After a run, open the last HTML report in your browser:
+
+```bash
+npx playwright show-report
+```
+
+For more detail on acceptance flows and environment setup, see [docs/ACCEPTANCE_TESTS.md](docs/ACCEPTANCE_TESTS.md).
+
 ---
 
 ## 📁 Project Structure
